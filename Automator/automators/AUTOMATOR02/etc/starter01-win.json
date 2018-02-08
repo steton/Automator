@@ -1,0 +1,23 @@
+{
+	"application" : {
+		"type" : "AUTOMATOR",
+		"workdir" : "C:\\Users\\esteton\\DEV\\WS-OXYGEN\\Automator_20180129-01.zip_expanded\\Automator\\",
+		"webserver" : {
+			"host" : "localhost",
+			"port" : 8445,
+			"keystore" : {
+				"file" : "C:\\Users\\esteton\\DEV\\WS-OXYGEN\\Automator_20180129-01.zip_expanded\\Automator\\etc\\keystore",
+				"passwd" : "OBF:1xms17jw1uuq1jg81jd21uvg17k21xmi"
+			}
+		}
+	},
+	"automator" : {
+		"name" : "Automator01",
+		"db" : {
+			"url" : "mongodb://ec2-34-245-8-142.eu-west-1.compute.amazonaws.com:27017/auto",
+			"user" : "",
+			"passwd" : ""
+		},
+		"scripts" : "C:\\Users\\esteton\\DEV\\WS-OXYGEN\\Automator_20180129-01.zip_expanded\\Automator\\scripts"
+	}
+}

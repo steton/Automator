@@ -1,0 +1,7 @@
+{
+	"type": "EXEC",
+	"hostid": 1,
+	"hostname": "dummyHost01",
+	"command": 1000,
+	"args": [10, "pippo", "pluto"]
+}

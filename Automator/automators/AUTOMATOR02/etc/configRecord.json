@@ -1,0 +1,29 @@
+{
+	"_id" : { 
+		"$oid" : "5a7582bae8cabf50f6fd7312"
+	},
+	"applications" : [
+		{
+			"id" : "AUTOMATOR01",
+			"webserver" : {
+				"host" : "localhost",
+				"port" : 8443,
+				"keystore" : {
+					"file" : "${BASE_DIR}/etc/keystore",
+					"passwd" : "OBF:1xms17jw1uuq1jg81jd21uvg17k21xmi"
+				}
+			}
+		},
+		{
+			"id" : "AUTOMATOR02",
+			"webserver" : {
+				"host" : "localhost",
+				"port" : 8445,
+				"keystore" : {
+					"file" : "${BASE_DIR}/etc/keystore",
+					"passwd" : "OBF:1xms17jw1uuq1jg81jd21uvg17k21xmi"
+				}
+			}
+		}
+	]
+}

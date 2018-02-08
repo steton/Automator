@@ -1,0 +1,8 @@
+{
+	"db" : {
+		"url" : "mongodb://ec2-34-245-8-142.eu-west-1.compute.amazonaws.com:27017/",
+		"db" : "autoDB", 
+		"user" : "",
+		"passwd" : ""
+	}
+}
