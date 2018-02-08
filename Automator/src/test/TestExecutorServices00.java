@@ -22,7 +22,7 @@ public class TestExecutorServices00 {
 		@Override
 		public Integer call() throws Exception {
 			for(long i=0; i < 100000; i++) {
-				Thread.sleep(0, 100);
+				Thread.sleep(0, 50);
 			}
 			System.out.println("--> " + id);
 			return id;
