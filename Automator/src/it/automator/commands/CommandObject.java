@@ -2,8 +2,7 @@ package it.automator.commands;
 
 public class CommandObject {
 	
-	public CommandObject(Long commandId, String commandName, String commandVersion, String commandClassname,
-			String commandLang, String commandCode) {
+	public CommandObject(Long commandId, String commandName, String commandVersion, String commandClassname, String commandLang, String commandCode) {
 		super();
 		this.commandId = commandId;
 		this.commandName = commandName;
@@ -43,7 +42,9 @@ public class CommandObject {
 		return commandCode;
 	}
 
-
+	public AbstractCommand getCommand() {
+		return null;
+	}
 
 	private Long commandId = null;
 	private String commandName = null;
@@ -51,7 +52,5 @@ public class CommandObject {
 	private String commandClassname = null;
 	private String commandLang = null;
 	private String commandCode = null;
-	
-	
 
 }

@@ -44,6 +44,15 @@ public final class CommandLoader {
 		commandsMap = new HashMap<>();
 	}
 	
+	public CommandObject getCommandObject(Long id) throws CommandException {
+		if(!commandsMap.containsKey(id) || commandsMap.get(id)==null) {
+			CommandException e = new CommandException(String.format("Command with ID := %d not found", id));
+			log.error(e);
+			throw e;
+		}
+		return commandsMap.get(id);
+	}
+	
 	
 	private void loadCommands() throws JsonMapperException {
 		DbConnection conn = null;	
@@ -77,7 +86,7 @@ public final class CommandLoader {
 					    String commandCode = new String(Base64.decodeBase64(command.getString("code").getBytes()));
 					    
 					    CommandObject co = new CommandObject(commandId, commandName, commandVersion, commandClassname, commandLang, commandCode);
-					    commandsMap.put(co.getCommandName(), co);
+					    commandsMap.put(co.getCommandId(), co);
 					    
 					    log.debug(String.format("ID := %d, NAME := '%s', VERSION := '%s', CLASSNAME := '%s', LANG := '%s', CODE := '%s'", commandId, commandName, commandVersion, commandClassname, commandLang, commandCode));
 					}
@@ -100,7 +109,7 @@ public final class CommandLoader {
 	private String dbUrl = null;
 	private String dbName = null;
 	
-	private Map<String, CommandObject> commandsMap = null; 
+	private Map<Long, CommandObject> commandsMap = null; 
 
 	private static CommandLoader instance = null;
 	

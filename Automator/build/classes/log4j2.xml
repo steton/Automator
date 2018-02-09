@@ -4,7 +4,7 @@
 <Configuration status="WARN" monitorInterval="300">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{YYYYMMdd_HHmmss.SSS} %-5level %logger{36} %L - %msg%n"/>
+      <PatternLayout pattern="%d{YYYYMMdd_HHmmss.SSS} %-5level %logger{36} [%L] - %msg%n"/>
     </Console>
   </Appenders>
   <Loggers>
@@ -18,6 +18,15 @@
       <AppenderRef ref="Console"/>
     </Logger>
     <Logger name="org.eclipse.jetty" level="error" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.mongodb.driver.cluster" level="error" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.mongodb.driver.connection" level="error" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.mongodb.driver.protocol.command" level="error" additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
   </Loggers>
