@@ -9,11 +9,10 @@ import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
 import org.bson.Document;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 
+import it.automator.commands.CommandLoader;
 import it.automator.main.Starter;
 import it.automator.mapper.configuration.JsonMapperException;
 import it.automator.mapper.configuration.StarterConfigObject;
@@ -43,8 +42,8 @@ public class Automator {
 		log.debug("Configure service.");
 		configureAutomator();
 		
-		log.debug("Load commands.");
-		loadCommands();
+		log.debug("Configure commands loader.");
+		configureCommandsLoader();
 		
 		log.debug("Execute flow manager.");
 		executeFlowManager();
@@ -54,48 +53,10 @@ public class Automator {
 	}
 	
 	
-	private void loadCommands() throws JsonMapperException {
-		DbConnection conn = null;	
-		
-		try {		
-			conn = DbConnectionFactory
-				.getInstance()
-				.setConnectionUri(config.getDb().getUrl())
-				.setDatabase(config.getDb().getDb())
-				.getConnection();
-			
-			if(conn == null) {
-				JsonMapperException e = new JsonMapperException(String.format("Failed to connect to DB '%s' and database '%s'", config.getDb().getUrl(), config.getDb().getDb()));
-				log.error(e);
-				throw e;
-			}
-			
-			MongoCollection<Document> coll = conn.getCollection(Automator.DB_COMMANDS_COLLECTION_NAME);
-			FindIterable<Document> commands = coll.find(Filters.eq("enabled", true));
-			
-			MongoCursor<Document> commandsIterator = commands.iterator();
-			while(commandsIterator.hasNext()) {
-				try {
-					Document command = commandsIterator.next();
-					if(command != null) {
-						Integer commandId = command.getInteger("id");
-						String commandName = command.getString("name");
-					    String commandversion = command.getString("version");
-					    String commandClassname = command.getString("classname");
-					    String commandLang = command.getString("lang");
-					    String commandCode = command.getString("code"); 
-					}
-				}
-				catch(Exception e) {
-					log.error(e);
-				}
-			}
-		}
-		finally {
-			log.debug("Finalize db connection.");
-			if(conn != null)
-				conn.close();
-		}
+	private void configureCommandsLoader() throws JsonMapperException {
+		commandLoader = CommandLoader
+							.getInstance()
+							.setDbConfig(config.getDb().getUrl(), config.getDb().getDb());
 	}
 	
 
@@ -237,6 +198,8 @@ public class Automator {
 	
 	private Logger log = null;
 	
+	private CommandLoader commandLoader = null;
+	
 	
 	private File automatorBaseDir = null;
 	private String automatorName = null;
@@ -261,6 +224,5 @@ public class Automator {
 	private static final String NONE_STRING = "_#NONE#_";
 	
 	private static final String DB_CONFIG_COLLECTION_NAME = "config";
-	private static final String DB_COMMANDS_COLLECTION_NAME = "commands";
 	
 }
