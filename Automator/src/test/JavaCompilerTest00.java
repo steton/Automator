@@ -12,6 +12,8 @@ import java.nio.file.Paths;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
+import it.automator.commands.AbstractCommand;
+
 public class JavaCompilerTest00 {
 	
 	public class JavaCompilerException extends Exception {
@@ -60,13 +62,13 @@ public class JavaCompilerTest00 {
         URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{classUrl});
         Class<?> clazz = Class.forName(className, true, classLoader);
         
-        if(!clazz.getSuperclass().getName().equals(AbstractNode.class.getName())) {
-        	Exception e = new Exception(String.format("Class '%s' not extends '%s' as required.", className, AbstractNode.class.getName()));
+        if(!clazz.getSuperclass().getName().equals(AbstractCommand.class.getName())) {
+        	Exception e = new Exception(String.format("Class '%s' not extends '%s' as required.", className, AbstractCommand.class.getName()));
         	throw e;
         }
         
         
-        AbstractNode obj = (AbstractNode)clazz.newInstance();
+        AbstractCommand obj = (AbstractCommand)clazz.newInstance();
         obj.execute(null);
     }
 

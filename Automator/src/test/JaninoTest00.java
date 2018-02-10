@@ -8,6 +8,8 @@ import java.io.PrintWriter;
 import org.codehaus.commons.compiler.CompilerFactoryFactory;
 import org.codehaus.commons.compiler.IClassBodyEvaluator;
 
+import it.automator.commands.AbstractCommand;
+
 public class JaninoTest00 {
 	
 	public class JaninoException extends Exception {
@@ -97,7 +99,7 @@ public class JaninoTest00 {
         System.out.println(c.getName());
         
         
-        AbstractNode n = (AbstractNode)c.newInstance();
+        AbstractCommand n = (AbstractCommand)c.newInstance();
         System.out.println("RES := " + n.execute(null));
         
 		
