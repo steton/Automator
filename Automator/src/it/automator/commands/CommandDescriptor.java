@@ -8,6 +8,5 @@ public interface CommandDescriptor {
 	public String getCommandClassname();
 	public String getCommandLang();
 	public Class<?> getClazz() throws CommandException;
-	
 
 }

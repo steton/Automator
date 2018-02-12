@@ -32,7 +32,7 @@ public class ActivityFlowManager {
 	}
 	
 	
-	public ActivityFlowManager setAutomatorId(String n) {
+	public ActivityFlowManager configureAutomatorId(String n) {
 		automatorId = n;
 		return this;
 	}
@@ -92,7 +92,7 @@ public class ActivityFlowManager {
 				log.info(d.toJson());
 			}
 			
-			
+			// Load, start and chack flows executions 
 		}
 		finally {
 			log.debug("Close db connection.");

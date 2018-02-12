@@ -269,7 +269,9 @@ public final class CommandFactory {
 					    CO co = new CO(commandId, commandName, commandVersion, commandClassname, commandLang, commandCode);
 					    commandsMap.put(co.getCommandId(), co);
 					    
-					    log.debug(String.format("ID := %d, NAME := '%s', VERSION := '%s', CLASSNAME := '%s', LANG := '%s', CODE := '%s'", commandId, commandName, commandVersion, commandClassname, commandLang, commandCode));
+					    //createCommand(co.getCommandId()).execute(null);
+					    
+					    log.debug(String.format("ID := %d, NAME := '%s', VERSION := '%s', CLASSNAME := '%s', LANG := '%s', CODE := '%s'", commandId, commandName, commandVersion, commandClassname, commandLang, ""));//commandCode));
 					}
 				}
 				catch(Exception e) {

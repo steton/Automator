@@ -34,7 +34,6 @@ public class Automator {
 		InternalProcessRegistry<Automator> ir = InternalProcessRegistry.getInstance();
 		ir.subscribeAgent(this);
 		
-		
 		initAutomator();
 	}
 	
@@ -43,7 +42,7 @@ public class Automator {
 		configureAutomator();
 		
 		log.debug("Configure commands loader.");
-		configureCommandsLoader();
+		configureCommandFactory();
 		
 		log.debug("Execute flow manager.");
 		executeFlowManager();
@@ -53,10 +52,10 @@ public class Automator {
 	}
 	
 	
-	private void configureCommandsLoader() throws JsonMapperException {
-		commandLoader = CommandFactory
-							.getInstance()
-							.configure(config.getDb().getUrl(), config.getDb().getDb(), config.getTmpdir());
+	private void configureCommandFactory() throws JsonMapperException {
+		CommandFactory
+			.getInstance()
+			.configure(config.getDb().getUrl(), config.getDb().getDb(), config.getTmpdir());
 	}
 	
 
@@ -180,7 +179,7 @@ public class Automator {
 	private void executeFlowManager() throws ActivityFlowException {
 		ActivityFlowManager
 			.getInstance()
-			.setAutomatorId(automatorName)
+			.configureAutomatorId(automatorName)
 			.configureDB(config.getDb().getUrl(), config.getDb().getDb())
 			.start();
 	}
@@ -197,9 +196,6 @@ public class Automator {
 	
 	
 	private Logger log = null;
-	
-	private CommandFactory commandLoader = null;
-	
 	
 	private File automatorBaseDir = null;
 	private String automatorName = null;
