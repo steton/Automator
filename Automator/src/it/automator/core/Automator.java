@@ -12,7 +12,7 @@ import org.bson.Document;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 
-import it.automator.commands.CommandLoader;
+import it.automator.commands.CommandFactory;
 import it.automator.main.Starter;
 import it.automator.mapper.configuration.JsonMapperException;
 import it.automator.mapper.configuration.StarterConfigObject;
@@ -54,9 +54,9 @@ public class Automator {
 	
 	
 	private void configureCommandsLoader() throws JsonMapperException {
-		commandLoader = CommandLoader
+		commandLoader = CommandFactory
 							.getInstance()
-							.setDbConfig(config.getDb().getUrl(), config.getDb().getDb());
+							.configure(config.getDb().getUrl(), config.getDb().getDb(), config.getTmpdir());
 	}
 	
 
@@ -198,7 +198,7 @@ public class Automator {
 	
 	private Logger log = null;
 	
-	private CommandLoader commandLoader = null;
+	private CommandFactory commandLoader = null;
 	
 	
 	private File automatorBaseDir = null;
