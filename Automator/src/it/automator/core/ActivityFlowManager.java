@@ -1,6 +1,7 @@
 package it.automator.core;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -10,6 +11,10 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 
+import it.automator.commands.AbstractCommand;
+import it.automator.commands.CommandFactory;
+import it.automator.commands.SessionMap;
+import it.automator.commands.ValidationException;
 import it.automator.utils.DbConnectionFactory;
 import it.automator.utils.DbConnectionFactory.DbConnection;
 
@@ -88,11 +93,45 @@ public class ActivityFlowManager {
 			
 			log.debug(String.format("Select flow description of '%s' flow.", automatorId));
 			FindIterable<Document> flows = coll.find(Filters.eq("automator", automatorId));
-			for(Document d : flows) {
-				log.info(d.toJson());
+			try {
+				for(Document d : flows) {
+					log.info(d.toJson());
+					
+					String flowname = d.getString("flowname");
+					String description = d.getString("description");
+					String automator = d.getString("automator");
+					String schedulation = d.getString("schedulation");
+					Integer timeout = d.getInteger("timeout");
+					
+					SessionMap session = new SessionMap(flowname);
+					
+					if(d.get("nodes") instanceof List<?>) {
+						List<?> nodes = (List<?>)d.get("nodes");
+						for(Object n : nodes) {
+							if(n instanceof Integer) {
+								Long nodeId = Integer.toUnsignedLong((Integer)n);
+								log.info(String.format("Instantiate new object with id '%d'.", nodeId));
+								// Instantiate and start all object of this flow
+								AbstractCommand c = CommandFactory.getInstance().createCommand(nodeId);
+								c.execute(session);
+							}
+							else {
+								ValidationException ex = new ValidationException(String.format("Type class exception for element in 'nodes'. It must be an Integer."));
+								log.error(ex);
+								throw ex;
+							}
+						}
+					}
+					else {
+						ValidationException ex = new ValidationException(String.format("Type class exception for entry 'nodes'. It must be a List of Integer."));
+						log.error(ex);
+						throw ex;
+					}
+				}	
 			}
-			
-			// Load, start and chack flows executions 
+			catch(Exception e) {
+				log.error(e);
+			}
 		}
 		finally {
 			log.debug("Close db connection.");

@@ -1,7 +1,6 @@
 package test;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -24,7 +23,7 @@ public class TestJson2Map {
 			
 			
 
-			Map<String, Object> map = new HashMap<String, Object>();
+			Map<String, Object> map = null;
 
 			// convert JSON string to Map
 			map = mapper.readValue(json, new TypeReference<Map<String, Object>>(){});
