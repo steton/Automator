@@ -97,9 +97,23 @@ public final class CommandFactory {
 		public String getCommandLang() {
 			return commandLang;
 		}
+		
+		
+		public AbstractCommand createCommand() throws CommandException {
+			Class<?> cl = getClazz();
+			try {
+				AbstractCommand o = (AbstractCommand)cl.newInstance();
+				return o;
+			}
+			catch (InstantiationException | IllegalAccessException ex) {
+				CommandException e = new CommandException(String.format("Unable to create object from class id '%s'", commandId), ex);
+				log.error(e);
+				throw e;
+			}
+		}
 
 
-		public Class<?> getClazz() throws CommandException {
+		private Class<?> getClazz() throws CommandException {
 			synchronized(CO.class) {
 				if(commandClazz == null) {
 					log.debug(String.format("Load class '%s' from source. Object id %d", commandClassname, commandId));
@@ -209,7 +223,7 @@ public final class CommandFactory {
 	
 	
 	
-	private CommandDescriptor getCommandObject(Long id) throws CommandException {
+	public CommandDescriptor getCommandObject(Long id) throws CommandException {
 		if(!commandsMap.containsKey(id) || commandsMap.get(id)==null) {
 			CommandException e = new CommandException(String.format("Command with ID := %d not found", id));
 			log.error(e);
@@ -220,18 +234,7 @@ public final class CommandFactory {
 	
 	
 	
-	public AbstractCommand createCommand(Long id) throws CommandException {
-		Class<?> cl = getCommandObject(id).getClazz();
-		try {
-			AbstractCommand o = (AbstractCommand)cl.newInstance();
-			return o;
-		}
-		catch (InstantiationException | IllegalAccessException ex) {
-			CommandException e = new CommandException(String.format("Unable to create object from class id '%s'", id), ex);
-			log.error(e);
-			throw e;
-		}
-	}
+	
 	
 	
 	

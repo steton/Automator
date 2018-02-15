@@ -1,5 +1,6 @@
 package it.automator.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 
-import it.automator.commands.AbstractCommand;
+import it.automator.commands.CommandDescriptor;
 import it.automator.commands.CommandFactory;
 import it.automator.commands.SessionMap;
 import it.automator.commands.ValidationException;
@@ -95,8 +96,9 @@ public class ActivityFlowManager {
 			FindIterable<Document> flows = coll.find(Filters.eq("automator", automatorId));
 			try {
 				for(Document d : flows) {
-					log.info(d.toJson());
+					//log.info(d.toJson());
 					
+					Integer flowid = d.getInteger("flowid");
 					String flowname = d.getString("flowname");
 					String description = d.getString("description");
 					String automator = d.getString("automator");
@@ -104,16 +106,45 @@ public class ActivityFlowManager {
 					Integer timeout = d.getInteger("timeout");
 					
 					SessionMap session = new SessionMap(flowname);
+					List<CommandDescriptor> nodes = new ArrayList<>();
+				
 					
+					if(d.get("initvalues") instanceof Document) {
+						Document ivals = d.get("initvalues", Document.class);
+						for(String k : ivals.keySet()) {
+							log.debug(String.format("Retreive value ['%s' => '%s'] and load in sessionMap.", k, ""+ivals.get(k)));
+							session.addValue(k, ivals.get(k));
+						}
+					}
+					else {
+						ValidationException ex = new ValidationException(String.format("Type class exception for entry 'initvalues'. It must be a Map."));
+						log.error(ex);
+						throw ex;
+					}
+					
+					
+					if(d.get("initvariables") instanceof Document) {
+						Document ivars = d.get("initvariables", Document.class);
+						for(String k : ivars.keySet()) {
+							log.debug(String.format("Retreive variable ['%s' => '%s'] and load in sessionMap.", k, ""+ivars.get(k)));
+							session.addVariable(k, ivars.get(k));
+						}
+					}
+					else {
+						ValidationException ex = new ValidationException(String.format("Type class exception for entry 'initvalues'. It must be a Map."));
+						log.error(ex);
+						throw ex;
+					}
+					
+					// Retreive Nodes
 					if(d.get("nodes") instanceof List<?>) {
-						List<?> nodes = (List<?>)d.get("nodes");
-						for(Object n : nodes) {
+						List<?> nn = (List<?>)d.get("nodes", ArrayList.class);
+						for(Object n : nn) {
 							if(n instanceof Integer) {
 								Long nodeId = Integer.toUnsignedLong((Integer)n);
 								log.info(String.format("Instantiate new object with id '%d'.", nodeId));
-								// Instantiate and start all object of this flow
-								AbstractCommand c = CommandFactory.getInstance().createCommand(nodeId);
-								c.execute(session);
+								CommandDescriptor c = CommandFactory.getInstance().getCommandObject(nodeId);
+								nodes.add(c);
 							}
 							else {
 								ValidationException ex = new ValidationException(String.format("Type class exception for element in 'nodes'. It must be an Integer."));
@@ -127,6 +158,11 @@ public class ActivityFlowManager {
 						log.error(ex);
 						throw ex;
 					}
+					
+					// Flow Instance creation and registering into the internal map. The flow will be activate later.
+					ActivityFlowInstance afi = new ActivityFlowInstance(flowid, flowname, description, automator, schedulation,	timeout, session, nodes);
+					activitiesMap.put(flowid, afi);
+			
 				}	
 			}
 			catch(Exception e) {
@@ -139,8 +175,10 @@ public class ActivityFlowManager {
 				conn.close();
 			conn = null;
 		}
+		
+		
+		
 	}
-	
 	
 	private static ActivityFlowManager instance = null;
 	
@@ -151,7 +189,7 @@ public class ActivityFlowManager {
 	private String automatorId = null;
 	private DbConnection conn = null;
 	
-	private Map<String, ActivityFlowInstance> activitiesMap = null;
+	private Map<Integer, ActivityFlowInstance> activitiesMap = null;
 	
 	
 	private static final String DB_FLOWS_COLLECTION_NAME = "flows"; 

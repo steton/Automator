@@ -15,7 +15,7 @@ public class SessionMap {
 	public SessionMap(String id) {
 		log = Logger.getLogger(SessionMap.class);
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmssSS");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd.HHmmss.SS");
 		if(id==null || id.trim().equals("")) {
 			sessionId = "UNNAMED_SESSION";
 		}

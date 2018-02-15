@@ -7,6 +7,6 @@ public interface CommandDescriptor {
 	public String getCommandVersion();
 	public String getCommandClassname();
 	public String getCommandLang();
-	public Class<?> getClazz() throws CommandException;
-
+	public AbstractCommand createCommand() throws CommandException;
+	
 }
